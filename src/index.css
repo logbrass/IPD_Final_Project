@@ -18,6 +18,25 @@ header {
   color: white;
   text-align: center;
   padding: 1rem;
+  position: relative;
+}
+
+.home-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.home-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 main {

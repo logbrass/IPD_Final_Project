@@ -91,15 +91,22 @@ function VideoPlayer({ video, title }) {
 function App() {
   const [selectedCreator, setSelectedCreator] = useState(null)
 
-  const handleBack = () => {
+  const handleHome = () => {
     setSelectedCreator(null)
+  }
+
+  const handleSelectCreator = (creator) => {
+    setSelectedCreator(creator)
   }
 
   return (
     <div className="App">
       <header>
-        <h1>Youtube History</h1>
+        <h1 onClick={handleHome} style={{cursor: 'pointer'}}>Youtube History</h1>
         <p>Discover how major YouTube creators have evolved from their earliest videos to their current content.</p>
+        {selectedCreator && (
+          <button className="home-btn" onClick={handleHome}>🏠 Home</button>
+        )}
       </header>
       <main>
         {!selectedCreator ? (
@@ -107,7 +114,7 @@ function App() {
             <h2>Explore Major Creators</h2>
             <div id="creators-list">
               {creators.map((creator, index) => (
-                <CreatorCard key={index} creator={creator} onSelect={setSelectedCreator} />
+                <CreatorCard key={index} creator={creator} onSelect={handleSelectCreator} />
               ))}
             </div>
           </section>
@@ -118,7 +125,7 @@ function App() {
               <VideoPlayer video={selectedCreator.earliestVideo} title="Earliest Video" />
               <VideoPlayer video={selectedCreator.recentVideo} title="Recent Video" />
             </div>
-            <button id="back-btn" onClick={handleBack}>Back to Explore</button>
+            <button id="back-btn" onClick={handleHome}>Back to Explore</button>
           </section>
         )}
       </main>
