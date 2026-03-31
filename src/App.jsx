@@ -126,7 +126,7 @@ function App() {
     <div className="App">
       <header>
         <h1 onClick={handleHome} style={{cursor: 'pointer'}}>Youtube History</h1>
-        <p>Explore the earliest videos from major YouTube creators</p>
+        <p>Explore the earliest videos from major YouTube creators <span className="blink">✨</span></p>
         {selectedVideo && (
           <button className="home-btn" onClick={handleHome}>🏠 Home</button>
         )}
@@ -157,6 +157,9 @@ function App() {
           </section>
         )}
       </main>
+      <div className="counter">
+        Visitors: 1337
+      </div>
     </div>
   )
 }
