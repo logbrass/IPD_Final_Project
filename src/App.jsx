@@ -8,7 +8,9 @@ const videos = [
     thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
     creator: "PewDiePie",
     subscribers: "110M",
-    type: "oldest"
+    type: "oldest",
+    views: "50M views",
+    uploadDate: "10 years ago"
   },
   {
     id: "dQw4w9WgXcQ", // Placeholder
@@ -16,7 +18,9 @@ const videos = [
     thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
     creator: "MrBeast",
     subscribers: "150M",
-    type: "oldest"
+    type: "oldest",
+    views: "200M views",
+    uploadDate: "8 years ago"
   },
   {
     id: "dQw4w9WgXcQ", // Placeholder
@@ -24,7 +28,9 @@ const videos = [
     thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
     creator: "Markiplier",
     subscribers: "35M",
-    type: "oldest"
+    type: "oldest",
+    views: "30M views",
+    uploadDate: "9 years ago"
   },
   {
     id: "dQw4w9WgXcQ", // Placeholder
@@ -32,7 +38,9 @@ const videos = [
     thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
     creator: "Linus Tech Tips",
     subscribers: "15M",
-    type: "oldest"
+    type: "oldest",
+    views: "15M views",
+    uploadDate: "11 years ago"
   },
   {
     id: "dQw4w9WgXcQ", // Placeholder
@@ -40,7 +48,59 @@ const videos = [
     thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
     creator: "Vsauce",
     subscribers: "18M",
-    type: "oldest"
+    type: "oldest",
+    views: "25M views",
+    uploadDate: "12 years ago"
+  },
+  {
+    id: "dQw4w9WgXcQ", // Placeholder
+    title: "Minecraft: The Early Days",
+    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+    creator: "CaptainSparklez",
+    subscribers: "12M",
+    type: "oldest",
+    views: "20M views",
+    uploadDate: "10 years ago"
+  },
+  {
+    id: "dQw4w9WgXcQ", // Placeholder
+    title: "First Ever Cooking Video",
+    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+    creator: "Binging with Babish",
+    subscribers: "8M",
+    type: "oldest",
+    views: "12M views",
+    uploadDate: "7 years ago"
+  },
+  {
+    id: "dQw4w9WgXcQ", // Placeholder
+    title: "The Science of Everything - Pilot",
+    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+    creator: "SciShow",
+    subscribers: "7M",
+    type: "oldest",
+    views: "8M views",
+    uploadDate: "13 years ago"
+  },
+  {
+    id: "dQw4w9WgXcQ", // Placeholder
+    title: "Welcome to My Channel!",
+    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+    creator: "Smarter Every Day",
+    subscribers: "11M",
+    type: "oldest",
+    views: "5M views",
+    uploadDate: "14 years ago"
+  },
+  {
+    id: "dQw4w9WgXcQ", // Placeholder
+    title: "My First Vlog",
+    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+    creator: "Lindsay Ellis",
+    subscribers: "1.2M",
+    type: "oldest",
+    views: "2M views",
+    uploadDate: "15 years ago"
   }
 ]
 
@@ -75,10 +135,13 @@ const creatorPopularVideos = {
 function VideoCard({ video, onSelect }) {
   return (
     <div className="video-card" onClick={() => onSelect(video)}>
-      <img src={video.thumbnail} alt={video.title} className="video-thumbnail" />
+      <div className="video-thumbnail-container">
+        <img src={video.thumbnail} alt={video.title} className="video-thumbnail" />
+      </div>
       <div className="video-info">
         <h3>{video.title}</h3>
-        <p>{video.creator} • {video.subscribers} subscribers</p>
+        <p className="video-creator">{video.creator}</p>
+        <p className="video-stats">{video.views} • {video.uploadDate}</p>
       </div>
     </div>
   )
