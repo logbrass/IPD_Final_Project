@@ -93,7 +93,7 @@ app.post('/api/analyze', async (req, res) => {
 // In production, serve the built Vite frontend from dist/
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../dist')))
-  app.get('*', (req, res) => {
+  app.use((req, res) => {
     res.sendFile(path.join(__dirname, '../dist/index.html'))
   })
 }
