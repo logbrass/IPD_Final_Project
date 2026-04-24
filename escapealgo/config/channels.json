@@ -1,0 +1,171 @@
+{
+  "creators": [
+    {
+      "id": "pewdiepie",
+      "display_name": "PewDiePie",
+      "channel_id": "UC-lHJZR3Gqxm24_Vd_AJ5Yw",
+      "tagline": "From bedroom gamer to internet legend — shaped, and reshaped, by the algorithm",
+      "eras": [
+        {
+          "slug": "early-lets-plays",
+          "label": "Early Let's Plays",
+          "years": "2011 - 2013",
+          "year_start": 2011,
+          "year_end": 2013,
+          "description": "Starts with Minecraft and horror gameplay. Low production, webcam reactions, personality-driven content begins to take shape.",
+          "search_keywords": ["lets play", "minecraft", "amnesia", "horror"]
+        },
+        {
+          "slug": "happy-wheels-breakout",
+          "label": "Happy Wheels Breakout",
+          "years": "2013 - 2014",
+          "year_start": 2013,
+          "year_end": 2014,
+          "description": "Blows up with Happy Wheels and other chaotic gameplay. Loud, exaggerated reactions + fast uploads drive rapid subscriber growth.",
+          "search_keywords": ["happy wheels", "funny moments", "montage"]
+        },
+        {
+          "slug": "youtube-king-era",
+          "label": "YouTube King Era",
+          "years": "2014 - 2016",
+          "year_start": 2014,
+          "year_end": 2016,
+          "description": "Hits 50M subscribers. Content becomes more polished, diverse — vlogs, meme reviews, occasional social commentary.",
+          "search_keywords": ["vlog", "challenge", "reaction", "playbutton"]
+        },
+        {
+          "slug": "meme-review-era",
+          "label": "Meme Review Era",
+          "years": "2017 - 2019",
+          "year_start": 2017,
+          "year_end": 2019,
+          "description": "Pivots to meme culture and commentary. YouTube algorithm punishes gaming content; he adapts with shorter, shareable formats.",
+          "search_keywords": ["meme review", "lwiay", "floor gang", "t-series"]
+        },
+        {
+          "slug": "post-algorithm",
+          "label": "Post-Algorithm Auteur",
+          "years": "2020 - Now",
+          "year_start": 2020,
+          "year_end": 2099,
+          "description": "Slows uploads, marries Marzia, experiments with book club and niche content. Deliberately stepping back from the algorithm.",
+          "search_keywords": ["book club", "pewdiepie", "japan", "married"]
+        }
+      ]
+    },
+    {
+      "id": "mrbeast",
+      "display_name": "MrBeast",
+      "channel_id": "UCX6OQ3DkcsbYNE6H8uQQuVA",
+      "tagline": "The algorithm didn't change MrBeast — he reverse-engineered it from day one",
+      "eras": [
+        {
+          "slug": "early-gaming",
+          "label": "Early Grinding",
+          "years": "2012 - 2017",
+          "year_start": 2012,
+          "year_end": 2017,
+          "description": "Low production gaming and commentary videos. Obsessively studies retention and virality before finding his formula.",
+          "search_keywords": ["minecraft", "gaming", "commentary"]
+        },
+        {
+          "slug": "viral-stunts",
+          "label": "Viral Stunt Era",
+          "years": "2017 - 2019",
+          "year_start": 2017,
+          "year_end": 2019,
+          "description": "Counting to 100,000. Reading every word in the dictionary. Pure retention-bait before the big budget arrived.",
+          "search_keywords": ["counting", "reading", "worst", "hours"]
+        },
+        {
+          "slug": "big-money",
+          "label": "Big Money Era",
+          "years": "2019 - 2021",
+          "year_start": 2019,
+          "year_end": 2021,
+          "description": "Gives away cars, cash, houses. Production value explodes. Reinvests every dollar into bigger stunts.",
+          "search_keywords": ["giving", "last to", "survive", "dollar"]
+        },
+        {
+          "slug": "beast-games",
+          "label": "Beast Games Era",
+          "years": "2022 - Now",
+          "year_start": 2022,
+          "year_end": 2099,
+          "description": "Squid Game recreations, island survival, $1M prizes. Content becomes indistinguishable from reality TV.",
+          "search_keywords": ["squid game", "island", "million", "challenge"]
+        }
+      ]
+    },
+    {
+      "id": "markiplier",
+      "display_name": "Markiplier",
+      "channel_id": "UCfnkLjY5NNJ0i67YpNVCAEQ",
+      "tagline": "Horror king who grew up on camera — the algorithm watched him change too",
+      "eras": [
+        {
+          "slug": "fnaf-horror",
+          "label": "Horror & FNAF Era",
+          "years": "2013 - 2016",
+          "year_start": 2013,
+          "year_end": 2016,
+          "description": "Explodes with FNAF and horror gameplay. Emotional reactions and earnest persona build cult following.",
+          "search_keywords": ["fnaf", "five nights", "horror", "scary"]
+        },
+        {
+          "slug": "variety-era",
+          "label": "Variety & Growth",
+          "years": "2016 - 2019",
+          "year_start": 2016,
+          "year_end": 2019,
+          "description": "Expands beyond horror into sketches, collabs, and charity streams. Maintains authenticity while scaling.",
+          "search_keywords": ["charity", "sketch", "who killed", "unus annus"]
+        },
+        {
+          "slug": "modern-mark",
+          "label": "Modern Auteur",
+          "years": "2020 - Now",
+          "year_start": 2020,
+          "year_end": 2099,
+          "description": "Produces elaborate cinematic YouTube productions. Unus Annus, Heist, Iron Lung. Resists pure algorithm optimization.",
+          "search_keywords": ["iron lung", "in space", "heist", "production"]
+        }
+      ]
+    },
+    {
+      "id": "smosh",
+      "display_name": "Smosh",
+      "channel_id": "UCxQbYGpbdrh-b2ND-AfIybg",
+      "tagline": "The OGs who got swallowed by the machine they helped build",
+      "eras": [
+        {
+          "slug": "golden-age",
+          "label": "Golden Age",
+          "years": "2005 - 2012",
+          "year_start": 2005,
+          "year_end": 2012,
+          "description": "Pokemon theme, food battle, random skits. YouTube's first viral sensations before monetization existed.",
+          "search_keywords": ["pokemon", "food battle", "if it were real", "ian is bored"]
+        },
+        {
+          "slug": "expansion-era",
+          "label": "Expansion & Channels",
+          "years": "2012 - 2017",
+          "year_start": 2012,
+          "year_end": 2017,
+          "description": "Smosh Games, Smosh Pit, Every Blank Ever. Franchise expands as the algorithm rewards consistent formats.",
+          "search_keywords": ["every blank ever", "smosh games", "game bang"]
+        },
+        {
+          "slug": "post-ian-anthony",
+          "label": "Corporate & Reboot",
+          "years": "2017 - Now",
+          "year_start": 2017,
+          "year_end": 2099,
+          "description": "Sold to Defy Media, Anthony leaves, near-death. Re-purchased by Ian. Struggling to reconcile nostalgia with algorithm demands.",
+          "search_keywords": ["smosh cast", "pit", "games", "try not to"]
+        }
+      ]
+    }
+  ]
+}
