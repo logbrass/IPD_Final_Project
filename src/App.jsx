@@ -3,36 +3,40 @@ import './index.css'
 
 // Known creators shown on the home screen — handle is the YouTube @handle
 const HOME_CREATORS = [
-  { id: 'pewdiepie',     name: 'PewDiePie',       handle: 'pewdiepie',          subscribers: '110M', avatarColor: '#ff6b6b' },
-  { id: 'mrbeast',       name: 'MrBeast',          handle: 'mrbeast',            subscribers: '320M', avatarColor: '#4ecdc4' },
-  { id: 'markiplier',    name: 'Markiplier',       handle: 'markiplier',         subscribers: '36M',  avatarColor: '#a855f7' },
-  { id: 'smosh',         name: 'Smosh',            handle: 'smosh',              subscribers: '25M',  avatarColor: '#3b82f6' },
-  { id: 'vsauce',        name: 'Vsauce',           handle: 'vsauce',             subscribers: '18M',  avatarColor: '#f59e0b' },
-  { id: 'jacksepticeye', name: 'jacksepticeye',    handle: 'jacksepticeye',      subscribers: '30M',  avatarColor: '#10b981' },
-  { id: 'nigahiga',      name: 'nigahiga',         handle: 'ryanhiga',           subscribers: '21M',  avatarColor: '#ef4444' },
-  { id: 'mkbhd',         name: 'MKBHD',            handle: 'mkbhd',              subscribers: '21M',  avatarColor: '#111827' },
-  { id: 'markrober',     name: 'Mark Rober',       handle: 'MarkRober',          subscribers: '50M',  avatarColor: '#e74c3c' },
-  { id: 'rhettlink',     name: 'Rhett & Link',     handle: 'GoodMythicalMorning',subscribers: '11M',  avatarColor: '#e67e22' },
-  { id: 'slomo',         name: 'The Slo Mo Guys',  handle: 'TheSlowMoGuys',      subscribers: '21M',  avatarColor: '#1abc9c' },
-  { id: 'lonelygirl15',  name: 'lonelygirl15',     handle: 'lonelygirl15',       subscribers: '89K',  avatarColor: '#ec4899' },
+  { id: 'pewdiepie',       name: 'PewDiePie',        handle: 'pewdiepie',           subscribers: '110M', since: 2010 },
+  { id: 'mrbeast',         name: 'MrBeast',           handle: 'mrbeast',             subscribers: '320M', since: 2012 },
+  { id: 'markiplier',      name: 'Markiplier',        handle: 'markiplier',          subscribers: '36M',  since: 2012 },
+  { id: 'smosh',           name: 'Smosh',             handle: 'smosh',               subscribers: '25M',  since: 2005 },
+  { id: 'vsauce',          name: 'Vsauce',            handle: 'vsauce',              subscribers: '18M',  since: 2010 },
+  { id: 'jacksepticeye',   name: 'jacksepticeye',     handle: 'jacksepticeye',       subscribers: '30M',  since: 2012 },
+  { id: 'nigahiga',        name: 'nigahiga',          handle: 'ryanhiga',            subscribers: '21M',  since: 2006 },
+  { id: 'mkbhd',           name: 'MKBHD',             handle: 'mkbhd',               subscribers: '21M',  since: 2009 },
+  { id: 'markrober',       name: 'Mark Rober',        handle: 'MarkRober',           subscribers: '50M',  since: 2011 },
+  { id: 'rhettlink',       name: 'Rhett & Link',      handle: 'GoodMythicalMorning', subscribers: '11M',  since: 2006 },
+  { id: 'slomo',           name: 'The Slo Mo Guys',   handle: 'TheSlowMoGuys',       subscribers: '21M',  since: 2010 },
+  { id: 'vanoss',          name: 'VanossGaming',      handle: 'VanossGaming',        subscribers: '25M',  since: 2011 },
+  { id: 'linus',           name: 'Linus Tech Tips',   handle: 'LinusTechTips',       subscribers: '15M',  since: 2008 },
+  { id: 'veritasium',      name: 'Veritasium',        handle: 'veritasium',          subscribers: '17M',  since: 2010 },
+  { id: 'kurzgesagt',      name: 'Kurzgesagt',        handle: 'kurzgesagt',          subscribers: '22M',  since: 2013 },
+  { id: 'tomscott',        name: 'Tom Scott',         handle: 'TomScottGo',          subscribers: '6.7M', since: 2009 },
+  { id: 'cgpgrey',         name: 'CGP Grey',          handle: 'CGPGrey',             subscribers: '6M',   since: 2010 },
+  { id: 'smartereveryday', name: 'SmarterEveryDay',   handle: 'smartereveryday',     subscribers: '11M',  since: 2007 },
+  { id: 'dudeperfect',     name: 'Dude Perfect',      handle: 'DudePerfect',         subscribers: '60M',  since: 2009 },
+  { id: 'dream',           name: 'Dream',             handle: 'Dream',               subscribers: '35M',  since: 2014 },
+  { id: 'colinfurze',      name: 'Colin Furze',       handle: 'colinfurze',          subscribers: '13M',  since: 2006 },
+  { id: 'phillyD',         name: 'Philip DeFranco',   handle: 'PhilipDeFranco',      subscribers: '6.4M', since: 2006 },
+  { id: 'rwj',             name: 'Ray Wm. Johnson',   handle: 'RayWilliamJohnson',   subscribers: '10M',  since: 2009 },
+  { id: 'shanedawson',     name: 'Shane Dawson',      handle: 'shanedawson',         subscribers: '19M',  since: 2008 },
+  { id: 'daviddobrik',     name: 'David Dobrik',      handle: 'DavidDobrik',         subscribers: '18M',  since: 2015 },
 ]
 
-const HOME_COLS = {
-  col1: ['pewdiepie', 'rhettlink', 'markiplier'],
-  col2: ['mkbhd', 'lonelygirl15', 'slomo'],
-  colCenterTop: ['mrbeast'],
-  colCenterBot: ['markrober', 'nigahiga'],
-  col4: ['vsauce', 'jacksepticeye'],
-  col5: ['smosh', 'jacksepticeye', 'vsauce'],
-}
-
-// Compact home column layout
+// 5 columns — col index 2 is center (first entry = top card, rest = below hero stacked vertically)
 const LAYOUT = [
-  ['pewdiepie', 'rhettlink', 'markiplier'],
-  ['mkbhd', 'lonelygirl15'],
-  ['mrbeast'],                            // center featured
-  ['slomo', 'markrober'],
-  ['smosh', 'nigahiga', 'vsauce', 'jacksepticeye'],
+  ['pewdiepie',  'rhettlink',  'markiplier',      'tomscott',    'colinfurze'  ],
+  ['mkbhd',      'vanoss',      'linus',           'veritasium',  'cgpgrey'     ],
+  ['mrbeast',    'vsauce',     'dream',            'shanedawson'               ], // center
+  ['slomo',      'markrober',  'smartereveryday',  'kurzgesagt',  'dudeperfect' ],
+  ['smosh',      'nigahiga',   'jacksepticeye',    'rwj',         'phillyD'     ],
 ]
 
 async function fetchCreatorData(handle) {
@@ -77,24 +81,35 @@ function LoadingScreen({ creatorName }) {
 
 // ── HOME SCREEN ───────────────────────────────────────────────────────────────
 
-function CreatorCard({ creator, onSelect }) {
-  const [loaded, setLoaded] = useState(false)
+function CreatorCard({ creator, onSelect, avatarUrl }) {
+  const staticSrc = `/avatars/${creator.id}.jpg`
+  const [src, setSrc] = useState(staticSrc)
+  const [visible, setVisible] = useState(false)
+
+  // Upgrade to live YouTube URL when it arrives — don't hide the existing image
+  useEffect(() => {
+    if (avatarUrl) setSrc(avatarUrl)
+  }, [avatarUrl])
 
   return (
     <div className="creator-card" onClick={() => onSelect(creator)}>
       <div className="creator-card-avatar-wrap">
         <img
-          src={`/avatars/${creator.id}.jpg`}
+          src={src}
           alt=""
           className="creator-card-avatar"
-          style={{ opacity: loaded ? 1 : 0, transition: 'opacity 0.2s' }}
-          onLoad={() => setLoaded(true)}
-          onError={e => { e.target.style.display = 'none' }}
+          style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.3s' }}
+          onLoad={() => setVisible(true)}
+          onError={() => {
+            // YouTube URL failed → fall back to static file
+            if (src !== staticSrc) setSrc(staticSrc)
+            // Static also failed → stays hidden (visible remains false)
+          }}
         />
       </div>
       <div className="creator-card-name">{creator.name}</div>
       <div className="creator-card-subs">{creator.subscribers} subscribers</div>
-      <div className="creator-card-pill">early days → now</div>
+      <div className="creator-card-pill">{creator.since} → now</div>
     </div>
   )
 }
@@ -102,6 +117,18 @@ function CreatorCard({ creator, onSelect }) {
 function HomeScreen({ onSelectCreator }) {
   const [query, setQuery] = useState('')
   const [showSuggestions, setShowSuggestions] = useState(false)
+  const [avatarUrls, setAvatarUrls] = useState({})
+
+  useEffect(() => {
+    fetch('/api/avatars', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ handles: HOME_CREATORS.map(c => c.handle) }),
+    })
+      .then(r => r.json())
+      .then(data => { if (data && typeof data === 'object') setAvatarUrls(data) })
+      .catch(() => {})
+  }, [])
 
   const suggestions = HOME_CREATORS.filter(c =>
     query && c.name.toLowerCase().includes(query.toLowerCase())
@@ -135,22 +162,22 @@ function HomeScreen({ onSelectCreator }) {
           <div
             key={ci}
             className={`home-col${ci === 2 ? ' home-col-center' : ''}`}
-            style={{ paddingTop: [40, 180, 0, 180, 40][ci] }}
+            style={{ paddingTop: [40, 140, 40, 140, 40][ci] }}
           >
             {ci === 2 ? (
               <>
                 <div className="center-cards-top">
                   {col.slice(0, 1).map(id => {
                     const c = HOME_CREATORS.find(x => x.id === id)
-                    return c ? <CreatorCard key={id} creator={c} onSelect={onSelectCreator} /> : null
+                    return c ? <CreatorCard key={id} creator={c} onSelect={onSelectCreator} avatarUrl={avatarUrls[c.handle]} /> : null
                   })}
                 </div>
 
                 <div className="home-hero">
                   <h1 className="home-title">That's History</h1>
                   <p className="home-subtitle">
-                    Rediscover creators before the algorithm changed them.<br />
-                    Click a profile or paste any YouTube @handle.
+                    Rediscover creators before the algorithm<br />
+                    changed them — or search any YouTube handle.
                   </p>
                   <div className="search-wrap">
                     <input
@@ -177,14 +204,14 @@ function HomeScreen({ onSelectCreator }) {
                 <div className="center-cards-bot">
                   {col.slice(1).map(id => {
                     const c = HOME_CREATORS.find(x => x.id === id)
-                    return c ? <CreatorCard key={id} creator={c} onSelect={onSelectCreator} /> : null
+                    return c ? <CreatorCard key={id} creator={c} onSelect={onSelectCreator} avatarUrl={avatarUrls[c.handle]} /> : null
                   })}
                 </div>
               </>
             ) : (
               col.map(id => {
                 const c = HOME_CREATORS.find(x => x.id === id)
-                return c ? <CreatorCard key={id} creator={c} onSelect={onSelectCreator} /> : null
+                return c ? <CreatorCard key={id} creator={c} onSelect={onSelectCreator} avatarUrl={avatarUrls[c.handle]} /> : null
               })
             )}
           </div>
