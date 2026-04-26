@@ -81,30 +81,19 @@ function LoadingScreen({ creatorName }) {
 
 // ── HOME SCREEN ───────────────────────────────────────────────────────────────
 
-function CreatorCard({ creator, onSelect, avatarUrl }) {
-  const staticSrc = `/avatars/${creator.id}.jpg`
-  const [src, setSrc] = useState(staticSrc)
+function CreatorCard({ creator, onSelect }) {
   const [visible, setVisible] = useState(false)
-
-  // Upgrade to live YouTube URL when it arrives — don't hide the existing image
-  useEffect(() => {
-    if (avatarUrl) setSrc(avatarUrl)
-  }, [avatarUrl])
 
   return (
     <div className="creator-card" onClick={() => onSelect(creator)}>
       <div className="creator-card-avatar-wrap">
         <img
-          src={src}
+          src={`/avatars/${creator.id}.jpg`}
           alt=""
           className="creator-card-avatar"
           style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.3s' }}
           onLoad={() => setVisible(true)}
-          onError={() => {
-            // YouTube URL failed → fall back to static file
-            if (src !== staticSrc) setSrc(staticSrc)
-            // Static also failed → stays hidden (visible remains false)
-          }}
+          onError={e => { e.target.style.display = 'none' }}
         />
       </div>
       <div className="creator-card-name">{creator.name}</div>
@@ -117,18 +106,6 @@ function CreatorCard({ creator, onSelect, avatarUrl }) {
 function HomeScreen({ onSelectCreator }) {
   const [query, setQuery] = useState('')
   const [showSuggestions, setShowSuggestions] = useState(false)
-  const [avatarUrls, setAvatarUrls] = useState({})
-
-  useEffect(() => {
-    fetch('/api/avatars', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ handles: HOME_CREATORS.map(c => c.handle) }),
-    })
-      .then(r => r.json())
-      .then(data => { if (data && typeof data === 'object') setAvatarUrls(data) })
-      .catch(() => {})
-  }, [])
 
   const suggestions = HOME_CREATORS.filter(c =>
     query && c.name.toLowerCase().includes(query.toLowerCase())
@@ -169,7 +146,7 @@ function HomeScreen({ onSelectCreator }) {
                 <div className="center-cards-top">
                   {col.slice(0, 1).map(id => {
                     const c = HOME_CREATORS.find(x => x.id === id)
-                    return c ? <CreatorCard key={id} creator={c} onSelect={onSelectCreator} avatarUrl={avatarUrls[c.handle]} /> : null
+                    return c ? <CreatorCard key={id} creator={c} onSelect={onSelectCreator}  /> : null
                   })}
                 </div>
 
@@ -204,14 +181,14 @@ function HomeScreen({ onSelectCreator }) {
                 <div className="center-cards-bot">
                   {col.slice(1).map(id => {
                     const c = HOME_CREATORS.find(x => x.id === id)
-                    return c ? <CreatorCard key={id} creator={c} onSelect={onSelectCreator} avatarUrl={avatarUrls[c.handle]} /> : null
+                    return c ? <CreatorCard key={id} creator={c} onSelect={onSelectCreator}  /> : null
                   })}
                 </div>
               </>
             ) : (
               col.map(id => {
                 const c = HOME_CREATORS.find(x => x.id === id)
-                return c ? <CreatorCard key={id} creator={c} onSelect={onSelectCreator} avatarUrl={avatarUrls[c.handle]} /> : null
+                return c ? <CreatorCard key={id} creator={c} onSelect={onSelectCreator}  /> : null
               })
             )}
           </div>
