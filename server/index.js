@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 import { fetchChannelByHandle, fetchChannelById, fetchTopVideos, fetchEarlyVideos, mergeAndSort, fetchAvatars } from './youtube.js'
 import { analyzeCreatorEras } from './gemini.js'
 import { buildFallbackEras } from './fallback.js'
-import { initDb, getCachedPage, setCachedPage, getComments, addComment } from './db.js'
+import { initDb, getCachedPage, getCachedPageByHandle, setCachedPage, getComments, addComment } from './db.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -44,14 +44,25 @@ app.post('/api/analyze', async (req, res) => {
       return res.status(400).json({ error: 'Provide handle or channelId' })
     }
 
+    // Check cache by handle FIRST — skips YouTube API entirely for known creators
+    if (handle) {
+      const cached = await getCachedPageByHandle(handle).catch(() => null)
+      if (cached) {
+        console.log(`[${handle}] Serving from handle cache`)
+        return res.json({ ...cached, fromCache: true })
+      }
+    }
+
     const channel = handle
       ? await fetchChannelByHandle(handle)
       : await fetchChannelById(channelId)
 
-    // Return cached result if available and fresh
+    // Return cached result if available and fresh (for channelId-based lookups or
+    // existing rows that predate the handle column — also back-fills the handle)
     const cached = await getCachedPage(channel.channel_id).catch(() => null)
     if (cached) {
-      console.log(`[${channel.title}] Serving from cache`)
+      console.log(`[${channel.title}] Serving from channel_id cache — back-filling handle`)
+      if (handle) setCachedPage(channel.channel_id, cached, handle).catch(() => {})
       return res.json({ ...cached, fromCache: true })
     }
 
@@ -93,13 +104,14 @@ app.post('/api/analyze', async (req, res) => {
 
     const result = { channel, eras, geminiUsed }
     // Store in DB (non-blocking — don't fail the request if DB is down)
-    setCachedPage(channel.channel_id, result).catch(err =>
+    setCachedPage(channel.channel_id, result, handle || null).catch(err =>
       console.warn('Failed to cache page:', err.message)
     )
 
     res.json(result)
   } catch (err) {
     console.error(err)
+    if (err.response?.status === 403) return res.status(403).json({ error: 'quota_exceeded' })
     res.status(500).json({ error: err.message })
   }
 })

@@ -26,6 +26,9 @@ export async function initDb() {
         cached_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       )
     `)
+    // Add handle column so we can look up by handle without hitting YouTube API
+    await client.query(`ALTER TABLE creator_pages ADD COLUMN IF NOT EXISTS handle TEXT`)
+    await client.query(`CREATE INDEX IF NOT EXISTS creator_pages_handle ON creator_pages (LOWER(handle))`)
     await client.query(`
       CREATE TABLE IF NOT EXISTS comments (
         id SERIAL PRIMARY KEY,
@@ -41,6 +44,18 @@ export async function initDb() {
   }
 }
 
+export async function getCachedPageByHandle(handle) {
+  const result = await getPool().query(
+    `SELECT data, cached_at FROM creator_pages WHERE LOWER(handle) = LOWER($1)`,
+    [handle.replace(/^@/, '')]
+  )
+  if (!result.rows.length) return null
+  const { data, cached_at } = result.rows[0]
+  const ageDays = (Date.now() - new Date(cached_at).getTime()) / (1000 * 60 * 60 * 24)
+  if (ageDays > 30) return null
+  return data
+}
+
 export async function getCachedPage(channelId) {
   const result = await getPool().query(
     `SELECT data, cached_at FROM creator_pages WHERE channel_id = $1`,
@@ -53,12 +68,15 @@ export async function getCachedPage(channelId) {
   return data
 }
 
-export async function setCachedPage(channelId, data) {
+export async function setCachedPage(channelId, data, handle = null) {
   await getPool().query(
-    `INSERT INTO creator_pages (channel_id, data, cached_at)
-     VALUES ($1, $2, NOW())
-     ON CONFLICT (channel_id) DO UPDATE SET data = $2, cached_at = NOW()`,
-    [channelId, JSON.stringify(data)]
+    `INSERT INTO creator_pages (channel_id, data, handle, cached_at)
+     VALUES ($1, $2, $3, NOW())
+     ON CONFLICT (channel_id) DO UPDATE
+       SET data = $2,
+           handle = COALESCE($3, creator_pages.handle),
+           cached_at = NOW()`,
+    [channelId, JSON.stringify(data), handle ? handle.replace(/^@/, '').toLowerCase() : null]
   )
 }
 
