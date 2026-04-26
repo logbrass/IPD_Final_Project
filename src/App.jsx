@@ -207,26 +207,26 @@ function seededRand(n) {
 
 function ViewReelModal({ creatorData, onClose }) {
   const allVideos = creatorData.eras.flatMap(era => era.videos)
-  const [currentIdx, setCurrentIdx] = useState(0)
+  const total = allVideos.length
+  const [position, setPosition] = useState(0) // continuous 0–1
+  const [scrubbing, setScrubbing] = useState(false)
   const filmRef = useRef(null)
-  const scrollAcc = useRef(0)
+
+  const currentIdx = Math.min(total - 1, Math.round(position * (total - 1)))
   const currentVideo = allVideos[currentIdx]
 
-  // Year markers: place each year at the proportional position of its first video
   const yearMarkers = (() => {
     const years = allVideos.map(v => parseInt(v.year))
-    const minYear = Math.min(...years)
-    const maxYear = Math.max(...years)
+    const min = Math.min(...years), max = Math.max(...years)
     const markers = []
-    for (let y = minYear; y <= maxYear; y++) {
-      const firstIdx = allVideos.findIndex(v => parseInt(v.year) >= y)
-      if (firstIdx !== -1) {
-        markers.push({ year: y, pct: (firstIdx / Math.max(allVideos.length - 1, 1)) * 100 })
-      }
+    for (let y = min; y <= max; y++) {
+      const idx = allVideos.findIndex(v => parseInt(v.year) >= y)
+      if (idx !== -1) markers.push({ year: y, pct: (idx / Math.max(total - 1, 1)) * 100 })
     }
     return markers
   })()
 
+  // Scroll filmstrip to follow currentIdx
   useEffect(() => {
     const strip = filmRef.current
     if (!strip) return
@@ -234,26 +234,32 @@ function ViewReelModal({ creatorData, onClose }) {
     if (!thumb) return
     const maxScroll = strip.scrollWidth - strip.clientWidth
     const target = thumb.offsetLeft + thumb.offsetWidth / 2 - strip.clientWidth / 2
-    strip.scrollTo({ left: Math.max(0, Math.min(target, maxScroll)), behavior: 'smooth' })
-  }, [currentIdx])
+    strip.scrollTo({ left: Math.max(0, Math.min(target, maxScroll)), behavior: scrubbing ? 'auto' : 'smooth' })
+  }, [currentIdx, scrubbing])
 
+  // Wheel: nudge position directly (no accumulator, no threshold)
   const handleWheel = (e) => {
     const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY
-    scrollAcc.current += delta
-    const threshold = 40
-    if (Math.abs(scrollAcc.current) >= threshold) {
-      const steps = Math.trunc(scrollAcc.current / threshold)
-      setCurrentIdx(prev => Math.max(0, Math.min(allVideos.length - 1, prev + steps)))
-      scrollAcc.current = 0
-    }
+    setPosition(p => Math.max(0, Math.min(1, p + delta / (total * 60))))
   }
 
-  const handleScrub = (e) => {
+  const posFromEvent = (e) => {
     const rect = e.currentTarget.getBoundingClientRect()
-    const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width))
-    const ratio = x / rect.width
-    setCurrentIdx(Math.max(0, Math.min(allVideos.length - 1, Math.floor(ratio * allVideos.length))))
+    return Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
   }
+
+  const handlePointerDown = (e) => {
+    e.currentTarget.setPointerCapture(e.pointerId)
+    setScrubbing(true)
+    setPosition(posFromEvent(e))
+  }
+
+  const handlePointerMove = (e) => {
+    if (!scrubbing) return
+    setPosition(posFromEvent(e))
+  }
+
+  const handlePointerUp = () => setScrubbing(false)
 
   const seed = creatorData.channel.title.split('').reduce((a, c) => a + c.charCodeAt(0), 0)
   const BARS = 280
@@ -283,7 +289,7 @@ function ViewReelModal({ creatorData, onClose }) {
               <div
                 key={v.id}
                 className={`reel-thumb${i === currentIdx ? ' reel-thumb-active' : ''}`}
-                onClick={() => setCurrentIdx(i)}
+                onClick={() => setPosition(i / Math.max(total - 1, 1))}
               >
                 <img src={v.thumb} alt="" onError={e => { e.target.src = 'https://placehold.co/56x36/333/555?text=.' }} />
               </div>
@@ -292,11 +298,7 @@ function ViewReelModal({ creatorData, onClose }) {
 
           <div className="reel-years" style={{ position: 'relative', display: 'block' }}>
             {yearMarkers.map(({ year, pct }) => (
-              <span
-                key={year}
-                className="reel-year"
-                style={{ position: 'absolute', left: `${pct}%`, transform: 'translateX(-50%)' }}
-              >
+              <span key={year} className="reel-year" style={{ position: 'absolute', left: `${pct}%`, transform: 'translateX(-50%)' }}>
                 {year}
               </span>
             ))}
@@ -304,17 +306,25 @@ function ViewReelModal({ creatorData, onClose }) {
 
           <div
             className="reel-waveform-wrap"
-            onPointerDown={handleScrub}
-            onPointerMove={e => { if (e.buttons === 1) handleScrub(e) }}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
             style={{ cursor: 'ew-resize' }}
           >
             <div className="reel-waveform">
               {waveHeights.map((h, i) => {
-                const isActive = (i / (BARS - 1)) <= (currentIdx / Math.max(allVideos.length - 1, 1))
+                const isActive = (i / (BARS - 1)) <= position
                 return <div key={i} className="reel-bar" style={{ height: h, background: isActive ? '#fff' : '#2e2e2e' }} />
               })}
             </div>
-            <div className="reel-playhead" style={{ left: `${(currentIdx / Math.max(allVideos.length - 1, 1)) * 100}%` }} />
+            <div
+              className="reel-playhead"
+              style={{
+                left: `${position * 100}%`,
+                transition: scrubbing ? 'none' : 'left 0.12s cubic-bezier(0.165, 0.84, 0.44, 1)',
+              }}
+            />
           </div>
         </div>
 

@@ -295,13 +295,8 @@ body {
 /* ── TIMELINE ───────────────────────────────────────────────────────────── */
 .cp-timeline-wrap {
   position: relative;
-  overflow-x: auto;
+  overflow: hidden;
   padding: 24px 60px 12px;
-  scrollbar-width: none;
-}
-
-.cp-timeline-wrap::-webkit-scrollbar {
-  display: none;
 }
 
 .cp-timeline-nodes {
