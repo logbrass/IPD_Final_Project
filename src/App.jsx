@@ -114,7 +114,7 @@ function ScrollingColumn({ creators, direction, startOffset, onSelect }) {
     const half = el.scrollHeight / 2
     posRef.current = direction === 'down' ? -half + startOffset : startOffset
 
-    const speed = 0.45
+    const speed = 0.70
     let raf
     const tick = () => {
       if (direction === 'up') {
