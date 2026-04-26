@@ -46,6 +46,7 @@ async function fetchCreatorData(handle) {
     body: JSON.stringify({ handle }),
   })
   if (!resp.ok) {
+    if (resp.status === 403) throw new Error('QUOTA_EXCEEDED')
     const err = await resp.json().catch(() => ({ error: resp.statusText }))
     if (err.error === 'INSUFFICIENT_ERAS') {
       throw new Error(`INSUFFICIENT_ERAS:${err.channel || handle}`)
@@ -685,7 +686,24 @@ function VideoModal({ video, channel, era, onClose }) {
 function ErrorScreen({ message, onBack }) {
   const notFound = message?.includes('CREATOR_NOT_FOUND')
   const insufficientEras = message?.startsWith('INSUFFICIENT_ERAS:')
+  const quotaExceeded = message === 'QUOTA_EXCEEDED'
   const channelName = insufficientEras ? message.replace('INSUFFICIENT_ERAS:', '') : null
+
+  if (quotaExceeded) {
+    return (
+      <div className="loading-screen">
+        <div className="loading-inner">
+          <p style={{ color: '#ff6b6b', fontSize: 20, marginBottom: 16, fontWeight: 700 }}>
+            We've hit our limit for the day
+          </p>
+          <p style={{ color: '#aaa', fontSize: 14, marginBottom: 32, lineHeight: 1.6, maxWidth: 420, textAlign: 'center' }}>
+            Our site has reached its daily YouTube API limit. Try one of our featured creators on the home page, or come back tomorrow.
+          </p>
+          <button className="back-btn" style={{ color: '#fff' }} onClick={onBack}>← Return home</button>
+        </div>
+      </div>
+    )
+  }
 
   if (insufficientEras) {
     return (
