@@ -262,7 +262,7 @@ function ViewReelModal({ creatorData, onClose }) {
   const handlePointerUp = () => setScrubbing(false)
 
   const seed = creatorData.channel.title.split('').reduce((a, c) => a + c.charCodeAt(0), 0)
-  const BARS = 280
+  const BARS = 200
   const waveHeights = Array.from({ length: BARS }, (_, i) =>
     Math.max(3, Math.round(seededRand(i * 2.3 + seed) * 38 + seededRand(i * 0.7 + seed) * 12 + 4))
   )
@@ -363,6 +363,19 @@ function CreatorPage({ creatorData, onBack, onSelectEra }) {
   const { channel, eras } = creatorData
   const [activeEra, setActiveEra] = useState(eras[0])
   const [showReel, setShowReel] = useState(false)
+  const lastWheel = useRef(0)
+
+  const handleTimelineWheel = (e) => {
+    e.preventDefault()
+    const now = Date.now()
+    if (now - lastWheel.current < 350) return
+    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY
+    if (Math.abs(delta) < 15) return
+    lastWheel.current = now
+    const idx = eras.findIndex(era => era.id === activeEra.id)
+    if (delta > 0) setActiveEra(eras[Math.min(eras.length - 1, idx + 1)])
+    else setActiveEra(eras[Math.max(0, idx - 1)])
+  }
 
   return (
     <div className="cp-page">
@@ -389,7 +402,7 @@ function CreatorPage({ creatorData, onBack, onSelectEra }) {
         </div>
       </div>
 
-      <div className="cp-timeline-wrap">
+      <div className="cp-timeline-wrap" onWheel={handleTimelineWheel}>
         <div
           className="cp-timeline-nodes"
           style={{ transform: `translateX(calc(-${eras.findIndex(e => e.id === activeEra.id)} * 350px + 15vw))` }}

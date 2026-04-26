@@ -673,8 +673,9 @@ body {
 }
 
 .reel-bar {
-  flex-shrink: 0;
-  width: 2px;
+  flex: 1;
+  min-width: 1px;
+  max-width: 4px;
   background: #2e2e2e;
   border-radius: 1px 1px 0 0;
   min-height: 3px;
