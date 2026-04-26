@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url'
 import { fetchChannelByHandle, fetchChannelById, fetchTopVideos, fetchEarlyVideos, mergeAndSort, fetchAvatars } from './youtube.js'
 import { analyzeCreatorEras } from './gemini.js'
 import { buildFallbackEras } from './fallback.js'
+import { initDb, getCachedPage, setCachedPage, getComments, addComment } from './db.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -35,7 +36,7 @@ app.get('/api/channel/:handle', async (req, res) => {
   }
 })
 
-// Full pipeline: fetch top + early videos → era analysis (Gemini or fallback)
+// Full pipeline: check cache → fetch videos → era analysis (Groq or fallback) → store
 app.post('/api/analyze', async (req, res) => {
   try {
     const { handle, channelId } = req.body
@@ -46,6 +47,13 @@ app.post('/api/analyze', async (req, res) => {
     const channel = handle
       ? await fetchChannelByHandle(handle)
       : await fetchChannelById(channelId)
+
+    // Return cached result if available and fresh
+    const cached = await getCachedPage(channel.channel_id).catch(() => null)
+    if (cached) {
+      console.log(`[${channel.title}] Serving from cache`)
+      return res.json({ ...cached, fromCache: true })
+    }
 
     // Fetch top all-time + early-days videos in parallel
     const [topVideos, earlyVideos] = await Promise.all([
@@ -83,9 +91,36 @@ app.post('/api/analyze', async (req, res) => {
       return res.status(422).json({ error: 'INSUFFICIENT_ERAS', channel: channel.title })
     }
 
-    res.json({ channel, eras, geminiUsed })
+    const result = { channel, eras, geminiUsed }
+    // Store in DB (non-blocking — don't fail the request if DB is down)
+    setCachedPage(channel.channel_id, result).catch(err =>
+      console.warn('Failed to cache page:', err.message)
+    )
+
+    res.json(result)
   } catch (err) {
     console.error(err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// Comments for a specific era
+app.get('/api/creator/:channelId/comments/:eraSlug', async (req, res) => {
+  try {
+    const comments = await getComments(req.params.channelId, req.params.eraSlug)
+    res.json(comments)
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+app.post('/api/creator/:channelId/comments/:eraSlug', async (req, res) => {
+  try {
+    const { text } = req.body
+    if (!text?.trim()) return res.status(400).json({ error: 'text is required' })
+    const comment = await addComment(req.params.channelId, req.params.eraSlug, text.trim())
+    res.json(comment)
+  } catch (err) {
     res.status(500).json({ error: err.message })
   }
 })
@@ -99,4 +134,10 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const PORT = process.env.PORT || 3001
-app.listen(PORT, () => console.log(`API server → http://localhost:${PORT}`))
+initDb()
+  .then(() => app.listen(PORT, () => console.log(`API server → http://localhost:${PORT}`)))
+  .catch(err => {
+    // DB unavailable — still start the server, just without caching/comments
+    console.warn('DB init failed (running without persistence):', err.message)
+    app.listen(PORT, () => console.log(`API server → http://localhost:${PORT}`))
+  })

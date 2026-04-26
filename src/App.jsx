@@ -515,24 +515,34 @@ function MemeWall({ era, channel }) {
 
 // ── ERA DETAIL PAGE ───────────────────────────────────────────────────────────
 
-const STARTER_COMMENTS = [
-  { text: "omg this is literally how i found them 😭", time: "12/31/2025" },
-  { text: "i used to binge this after school every day", time: "12/31/2025" },
-  { text: "the nostalgia just hit me like a truck", time: "12/31/2025" },
-  { text: "bro this era was EVERYTHING", time: "12/31/2025" },
-  { text: "this is where youtube actually started blowing up", time: "12/31/2025" },
-]
-
 function EraDetailPage({ creatorData, era, onBack }) {
   const { channel } = creatorData
   const [selectedVideo, setSelectedVideo] = useState(null)
-  const [comments, setComments] = useState(STARTER_COMMENTS)
+  const [comments, setComments] = useState([])
   const [draft, setDraft] = useState('')
 
-  const handleComment = (e) => {
+  useEffect(() => {
+    fetch(`/api/creator/${channel.channel_id}/comments/${era.slug}`)
+      .then(r => r.json())
+      .then(data => { if (Array.isArray(data)) setComments(data) })
+      .catch(() => {})
+  }, [channel.channel_id, era.slug])
+
+  const handleComment = async (e) => {
     if ((e.key === 'Enter' || e.type === 'click') && draft.trim()) {
-      setComments(prev => [...prev, { text: draft.trim(), time: 'Just now' }])
+      const text = draft.trim()
       setDraft('')
+      try {
+        const resp = await fetch(`/api/creator/${channel.channel_id}/comments/${era.slug}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text }),
+        })
+        const comment = await resp.json()
+        setComments(prev => [...prev, comment])
+      } catch {
+        setComments(prev => [...prev, { text, time: 'Just now' }])
+      }
     }
   }
 
