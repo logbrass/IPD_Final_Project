@@ -200,11 +200,6 @@ function HomeScreen({ onSelectCreator }) {
 
 // ── VIEW REEL MODAL ───────────────────────────────────────────────────────────
 
-function seededRand(n) {
-  const x = Math.sin(n + 1) * 10000
-  return x - Math.floor(x)
-}
-
 function ViewReelModal({ creatorData, onClose }) {
   const allVideos = creatorData.eras.flatMap(era => era.videos)
   const total = allVideos.length
@@ -261,11 +256,12 @@ function ViewReelModal({ creatorData, onClose }) {
 
   const handlePointerUp = () => setScrubbing(false)
 
-  const seed = creatorData.channel.title.split('').reduce((a, c) => a + c.charCodeAt(0), 0)
   const BARS = 200
-  const waveHeights = Array.from({ length: BARS }, (_, i) =>
-    Math.max(3, Math.round(seededRand(i * 2.3 + seed) * 38 + seededRand(i * 0.7 + seed) * 12 + 4))
-  )
+  const waveHeights = Array.from({ length: BARS }, (_, i) => {
+    if (i % 10 === 0) return 38
+    if (i % 5 === 0) return 22
+    return 10
+  })
 
   return (
     <div className="reel-overlay" onClick={onClose} onWheel={handleWheel}>
