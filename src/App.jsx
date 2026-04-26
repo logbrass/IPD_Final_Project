@@ -30,13 +30,13 @@ const HOME_CREATORS = [
   { id: 'daviddobrik',     name: 'David Dobrik',      handle: 'DavidDobrik',         subscribers: '18M',  since: 2015 },
 ]
 
-// 5 columns — col index 2 is center (first entry = top card, rest = below hero stacked vertically)
+// col index 2 = center hero (no creators). All 25 split across the 4 side cols.
 const LAYOUT = [
-  ['pewdiepie',  'rhettlink',  'markiplier',      'tomscott',    'colinfurze'  ],
-  ['mkbhd',      'vanoss',      'linus',           'veritasium',  'cgpgrey'     ],
-  ['mrbeast',    'vsauce',     'dream',            'shanedawson'               ], // center
-  ['slomo',      'markrober',  'smartereveryday',  'kurzgesagt',  'dudeperfect' ],
-  ['smosh',      'nigahiga',   'jacksepticeye',    'rwj',         'phillyD'     ],
+  ['pewdiepie',  'markiplier',     'vanoss',    'smosh',       'nigahiga',  'colinfurze', 'daviddobrik'],
+  ['mkbhd',      'linus',          'veritasium','tomscott',    'cgpgrey',   'smartereveryday'           ],
+  [], // center — hero only
+  ['slomo',      'markrober',      'kurzgesagt','dudeperfect', 'rhettlink',                             ],
+  ['mrbeast',    'vsauce',         'dream',     'shanedawson', 'rwj',       'phillyD',    'jacksepticeye'],
 ]
 
 async function fetchCreatorData(handle) {
@@ -104,6 +104,41 @@ function CreatorCard({ creator, onSelect }) {
   )
 }
 
+function ScrollingColumn({ creators, direction, startOffset, onSelect }) {
+  const innerRef = useRef(null)
+  const posRef = useRef(0)
+
+  useEffect(() => {
+    const el = innerRef.current
+    if (!el) return
+    const half = el.scrollHeight / 2
+    posRef.current = direction === 'down' ? -half + startOffset : startOffset
+
+    const speed = 0.35
+    let raf
+    const tick = () => {
+      if (direction === 'up') {
+        posRef.current -= speed
+        if (posRef.current <= -half) posRef.current += half
+      } else {
+        posRef.current += speed
+        if (posRef.current >= 0) posRef.current -= half
+      }
+      el.style.transform = `translateY(${posRef.current}px)`
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [direction, startOffset])
+
+  return (
+    <div className="col-scroll-inner" ref={innerRef}>
+      {creators.map(c => <CreatorCard key={c.id} creator={c} onSelect={onSelect} />)}
+      {creators.map(c => <CreatorCard key={`dup-${c.id}`} creator={c} onSelect={onSelect} />)}
+    </div>
+  )
+}
+
 function HomeScreen({ onSelectCreator }) {
   const [query, setQuery] = useState('')
   const [showSuggestions, setShowSuggestions] = useState(false)
@@ -133,24 +168,16 @@ function HomeScreen({ onSelectCreator }) {
     }
   }
 
+  const colDirections = ['up', 'down', null, 'down', 'up']
+  const colOffsets    = [320, -260, null, -440, 480]
+
   return (
     <div className="home-bg">
       <div className="home-cols">
-        {LAYOUT.map((col, ci) => (
-          <div
-            key={ci}
-            className={`home-col${ci === 2 ? ' home-col-center' : ''}`}
-            style={{ paddingTop: [40, 140, 40, 140, 40][ci] }}
-          >
-            {ci === 2 ? (
-              <>
-                <div className="center-cards-top">
-                  {col.slice(0, 1).map(id => {
-                    const c = HOME_CREATORS.find(x => x.id === id)
-                    return c ? <CreatorCard key={id} creator={c} onSelect={onSelectCreator}  /> : null
-                  })}
-                </div>
-
+        {LAYOUT.map((col, ci) => {
+          if (ci === 2) {
+            return (
+              <div key={ci} className="home-col-center">
                 <div className="home-hero">
                   <h1 className="home-title">That's History</h1>
                   <p className="home-subtitle">
@@ -178,22 +205,21 @@ function HomeScreen({ onSelectCreator }) {
                     )}
                   </div>
                 </div>
-
-                <div className="center-cards-bot">
-                  {col.slice(1).map(id => {
-                    const c = HOME_CREATORS.find(x => x.id === id)
-                    return c ? <CreatorCard key={id} creator={c} onSelect={onSelectCreator}  /> : null
-                  })}
-                </div>
-              </>
-            ) : (
-              col.map(id => {
-                const c = HOME_CREATORS.find(x => x.id === id)
-                return c ? <CreatorCard key={id} creator={c} onSelect={onSelectCreator}  /> : null
-              })
-            )}
-          </div>
-        ))}
+              </div>
+            )
+          }
+          const creators = col.map(id => HOME_CREATORS.find(x => x.id === id)).filter(Boolean)
+          return (
+            <div key={ci} className="home-col">
+              <ScrollingColumn
+                creators={creators}
+                direction={colDirections[ci]}
+                startOffset={colOffsets[ci]}
+                onSelect={onSelectCreator}
+              />
+            </div>
+          )
+        })}
       </div>
     </div>
   )

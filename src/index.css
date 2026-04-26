@@ -28,40 +28,68 @@ body {
 
 /* ── HOME SCREEN ────────────────────────────────────────────────────────── */
 .home-bg {
-  min-height: 100vh;
+  height: 100vh;
   background: #fff;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
 }
 
 .home-cols {
   display: flex;
-  gap: 48px;
+  gap: 32px;
   width: 100%;
-  max-width: 1600px;
+  max-width: 1400px;
+  height: 100vh;
   justify-content: center;
-  padding: 40px 40px 120px;
-  align-items: flex-start;
+  align-items: center;
+  padding: 0 40px;
 }
 
 .home-col {
+  flex-shrink: 0;
+  width: 220px;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.home-col::before,
+.home-col::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 140px;
+  z-index: 10;
+  pointer-events: none;
+}
+.home-col::before {
+  top: 0;
+  background: linear-gradient(to bottom, #fff 30%, transparent);
+}
+.home-col::after {
+  bottom: 0;
+  background: linear-gradient(to top, #fff 30%, transparent);
+}
+
+.col-scroll-inner {
   display: flex;
   flex-direction: column;
   gap: 80px;
-  flex-shrink: 0;
-  width: 220px;
+  padding: 40px 0;
+  will-change: transform;
 }
 
 .home-col-center {
   flex-shrink: 0;
   width: 440px;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 60px;
+  justify-content: center;
 }
 
 /* ── CREATOR CARD (soft tile) ───────────────────────────────────────── */
